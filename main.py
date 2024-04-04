@@ -1,57 +1,43 @@
+# import numpy as np
+# import matplotlib.pyplot as plt
+import math
+import sys
+
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 def print_hi(name):
     print(f'Hi, {name}')
 
-def approx_equal(num1, num2, tolerance=5*1e-2):
-    return abs(num1 - num2) <= tolerance
+
+def f(x):
+    result = x * x + math.sin(x / 5) - 1 / 4
+    return result
+
+
+def first_derivation_of_f(x):
+    result = 2 * x + (1 / 5) * math.cos(x / 5)
+    return result
+
+
+def second_derivation_of_f(x):
+    result = 2 - (1 / 25) * math.sin(x / 5)
+    return result
 
 
 if __name__ == '__main__':
-
-    x = np.array([-5,-4,-3,-2,-1,0,1,2,3,4,5])
-    y = np.array([60.2, 45.3, 30.5, 11.6, 5.2, 3.1, 6.8, 13.2, 32.8, 44.7, 61.5])
-    polynom_order = 3
-
-    A = np.zeros((4,4))
-
-    for i in range(polynom_order + 1): #bc polynom of power 3 + 1
-        for j in range(polynom_order + 1):
-            for k in range(x.shape[0]):
-               A[i,j] += pow(x[k], (i+j))
-    print("Defeniton of the components for the system of linear equations A*x = b:")
-    print("Matrix A:")
-    print(A)
-    b = np.zeros((4,1))
-    for i in range(polynom_order + 1):
-        for k in range(x.shape[0]):
-            b[i] += y[k]*pow(x[k],i)
-    print("Vector b:")
-    print(b)
-    solution = np.linalg.solve(A, b)
-    print("using linalg.solve function in numpy vector x was got:")
-    print(solution)
-    ##HARD CODED PART
-    a = solution[0]
-    b = solution[1]
-    c = solution[2]
-    d = solution[3]
-    print("Components of which are used as coefficients for the polynom f(x) = a + b*x + c*x^2 + d*x^3")
-    print("a = ", a)
-    print("b = ", b)
-    print("c = ", c)
-    print("d = ", d)
-    required_solution = np.array([5.15,0.38,2.35,-0.01])
-    are_solutions_equal = True
-    for i in range(polynom_order + 1):
-        if not approx_equal(required_solution[i],solution[i]):
-            are_solutions_equal = False
+    limitations = np.array([0, 100])
+    eps = 2 * sys.float_info.epsilon
+    print("interval set : [", limitations[0], ";", limitations[1], "]")
+    x_0 = (limitations[0] + limitations[1]) / 2
+    print("Initial solution set as x_0 = ", x_0)
+    iterations = 0
+    while (True):
+        fx_0 = f(x_0)
+        if (fx_0 <= eps):
             break
-    if are_solutions_equal:
-        print(
-            "The results \033[92mARE CLOSE\033[0m to expected result \033[92m a = 5.15, b = 0.38, c = 2.35, d = -0.01\033[0m")
-    else:
-        print(
-            "The results \033[91mARE NOT CLOSE\033[0m to expected result \033[92m a = 5.15, b = 0.38, c = 2.35, d = -0.01\033[0m")
-
+        dfx_0 = first_derivation_of_f(x_0)
+        ddfx_0 = second_derivation_of_f(x_0)
+        x_0 = x_0 - (2 * fx_0 * dfx_0) / (2 * fx_0 ** 2 - fx_0 * ddfx_0)
+        iterations += 1
+    print("By ", iterations, " of Halley's method the a result is :", x_0, " ,which was got with tolerance of ", eps,".")
