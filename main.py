@@ -41,4 +41,3 @@ if __name__ == '__main__':
         x_0 = x_0 - (2 * fx_0 * dfx_0) / (2 * fx_0 ** 2 - fx_0 * ddfx_0)
         iterations += 1
     print("By ", iterations, " of Halley's method the a result is :", x_0, " ,which was got with tolerance of ", eps,".")
-gay
